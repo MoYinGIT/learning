@@ -1,0 +1,1663 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C++ 竞赛级学习词典 - NOI金牌教练版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1e3c72;
+            --secondary: #2a5298;
+            --accent: #00d4ff;
+            --warning: #ff6b35;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --light: #ecf0f1;
+        }
+
+        body {
+            font-family: 'Fira Code', 'Monaco', 'Courier New', monospace;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        /* ========== Header ========== */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            border-bottom: 3px solid var(--accent);
+        }
+
+        header h1 {
+            font-size: 2.8em;
+            margin-bottom: 5px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        header .subtitle {
+            font-size: 1em;
+            opacity: 0.95;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        header .description {
+            font-size: 0.95em;
+            opacity: 0.85;
+            font-style: italic;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* ========== Navigation ========== */
+        .breadcrumb {
+            padding: 15px 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
+            display: none;
+        }
+
+        .breadcrumb.show {
+            display: block;
+        }
+
+        .breadcrumb a {
+            color: var(--primary);
+            cursor: pointer;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--accent);
+            text-decoration: underline;
+        }
+
+        .breadcrumb span {
+            color: #999;
+            margin: 0 5px;
+        }
+
+        /* ========== 首页 - 大纲视图 ========== */
+        #indexPage {
+            display: block;
+        }
+
+        #detailPage {
+            display: none;
+        }
+
+        .controls {
+            padding: 25px 30px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            background: linear-gradient(to bottom, #f8f9fa, #f0f2f5);
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 280px;
+            padding: 12px 18px;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: 'Fira Code', monospace;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+        }
+
+        .category-filter, .difficulty-filter {
+            padding: 12px 18px;
+            border: 2px solid var(--secondary);
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-family: 'Fira Code', monospace;
+            transition: all 0.3s ease;
+        }
+
+        .category-filter:hover, .difficulty-filter:hover {
+            border-color: var(--accent);
+            box-shadow: 0 4px 12px rgba(0, 212, 255, 0.2);
+        }
+
+        /* ========== 首页内容 - 卡片网格 ========== */
+        .index-content {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .topic-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 5px solid var(--primary);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .topic-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+            border-left-color: var(--accent);
+        }
+
+        .topic-card.category-basic {
+            border-top: 4px solid #3498db;
+        }
+
+        .topic-card.category-data {
+            border-top: 4px solid #9b59b6;
+        }
+
+        .topic-card.category-control {
+            border-top: 4px solid #e67e22;
+        }
+
+        .topic-card.category-function {
+            border-top: 4px solid #1abc9c;
+        }
+
+        .topic-card-header {
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(30, 60, 114, 0.05), rgba(42, 82, 152, 0.05));
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .topic-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: #e3f2fd;
+            color: #1565c0;
+            margin-bottom: 10px;
+        }
+
+        .topic-card-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .topic-card-english {
+            font-size: 0.9em;
+            color: #666;
+            font-style: italic;
+        }
+
+        .topic-card-body {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .topic-preview {
+            color: #666;
+            line-height: 1.6;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            flex: 1;
+        }
+
+        .topic-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid #f0f0f0;
+            font-size: 0.85em;
+        }
+
+        .difficulty-badge {
+            background: #f39c12;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+
+        .difficulty-badge.easy {
+            background: #2ecc71;
+        }
+
+        .difficulty-badge.hard {
+            background: #e74c3c;
+        }
+
+        .learn-btn {
+            background: var(--primary);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .learn-btn:hover {
+            background: var(--accent);
+            color: var(--primary);
+        }
+
+        /* ========== 详情页 ========== */
+        .detail-content {
+            padding: 40px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .back-button {
+            background: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 30px;
+            font-family: inherit;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: var(--secondary);
+            transform: translateX(-5px);
+        }
+
+        .detail-title {
+            font-size: 2.2em;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .detail-english {
+            font-size: 1.1em;
+            color: #999;
+            font-style: italic;
+            margin-bottom: 30px;
+        }
+
+        .detail-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .section {
+            margin-bottom: 35px;
+        }
+
+        .section-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--accent);
+        }
+
+        .concept-explanation {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--secondary);
+            line-height: 1.8;
+            font-size: 0.95em;
+            margin-bottom: 20px;
+        }
+
+        .syntax-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 0.9em;
+            overflow-x: auto;
+            border: 1px solid #333;
+            line-height: 1.6;
+        }
+
+        .key-points {
+            background: #e8f5e9;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--success);
+        }
+
+        .key-points li {
+            margin: 10px 0;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .example-section {
+            background: linear-gradient(to right, #f0f7ff, #f5f9ff);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #2196f3;
+            margin: 20px 0;
+        }
+
+        .example-title {
+            font-weight: bold;
+            color: #1565c0;
+            margin-bottom: 15px;
+            font-size: 1.05em;
+        }
+
+        .example-code {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            margin: 12px 0;
+            overflow-x: auto;
+            border: 1px solid #333;
+            line-height: 1.5;
+        }
+
+        .explanation-text {
+            color: #555;
+            font-size: 0.95em;
+            line-height: 1.7;
+            margin-top: 12px;
+            background: white;
+            padding: 12px;
+            border-radius: 4px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border-left: 4px solid;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .alert-warning {
+            background: #fffbea;
+            border-left-color: #ff6b35;
+            color: #ad3c00;
+        }
+
+        .alert-tip {
+            background: #f0f8ff;
+            border-left-color: #00a8e8;
+            color: #0056b3;
+        }
+
+        .alert-important {
+            background: #ffe6e6;
+            border-left-color: #e74c3c;
+            color: #721c24;
+        }
+
+        .mistakes-section {
+            background: #ffebee;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--danger);
+        }
+
+        .mistakes-title {
+            font-weight: bold;
+            color: var(--danger);
+            margin-bottom: 15px;
+            font-size: 1.05em;
+        }
+
+        .mistake-item {
+            margin: 15px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+            border-left: 3px solid var(--danger);
+        }
+
+        .mistake-label {
+            color: var(--danger);
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .related-section {
+            background: #f0f7ff;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .related-title {
+            font-weight: bold;
+            color: var(--secondary);
+            margin-bottom: 12px;
+        }
+
+        .related-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .related-tag {
+            background: var(--secondary);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .related-tag:hover {
+            background: var(--accent);
+            color: var(--primary);
+            transform: scale(1.08);
+        }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        footer {
+            background: linear-gradient(to bottom, #f8f9fa, #e8eaed);
+            text-align: center;
+            padding: 25px;
+            color: #666;
+            border-top: 2px solid #e0e0e0;
+            font-size: 0.9em;
+        }
+
+        /* ========== Responsive ========== */
+        @media (max-width: 1024px) {
+            .index-content {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em;
+            }
+
+            .index-content {
+                grid-template-columns: 1fr;
+                padding: 15px;
+            }
+
+            .detail-content {
+                padding: 20px;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .search-box, .category-filter, .difficulty-filter {
+                width: 100%;
+            }
+
+            .detail-title {
+                font-size: 1.6em;
+            }
+
+            .section-title {
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏆 C++ 竞赛级学习词典</h1>
+            <div class="subtitle">NOI 金牌教练版 | 专业竞赛培养</div>
+            <div class="description">
+                从零基础到竞赛高手 | 掌握每一个知识点的深层原理 | 培养竞赛思维和代码品质
+            </div>
+        </header>
+
+        <div class="breadcrumb" id="breadcrumb">
+            <a onclick="goToIndex()">📚 首页</a>
+            <span>></span>
+            <span id="currentTopic"></span>
+        </div>
+
+        <!-- ========== 首页（大纲视图） ========== -->
+        <div id="indexPage">
+            <div class="controls">
+                <input type="text" id="searchBox" class="search-box" placeholder="🔍 搜索知识点...">
+                <select id="categoryFilter" class="category-filter">
+                    <option value="">📚 全部分类</option>
+                    <option value="basic">🔧 基础概念</option>
+                    <option value="data">📊 数据类型</option>
+                    <option value="control">🎯 控制语句</option>
+                    <option value="function">⚙️ 函数与库</option>
+                </select>
+                <select id="difficultyFilter" class="difficulty-filter">
+                    <option value="">📈 全部难度</option>
+                    <option value="easy">⭐ 基础</option>
+                    <option value="medium">⭐⭐ 进阶</option>
+                    <option value="hard">⭐⭐⭐ 高难</option>
+                </select>
+            </div>
+
+            <div class="index-content" id="indexContent"></div>
+        </div>
+
+        <!-- ========== 详情页 ========== -->
+        <div id="detailPage">
+            <div class="detail-content" id="detailContent"></div>
+        </div>
+
+        <footer>
+            <p>💡 <strong>竞赛秘诀</strong>：不仅要会写代码，更要理解每一行代码的原理。</p>
+            <p>📖 持续学习、多做题目、反复总结 - 这是成为竞赛高手的必经之路。</p>
+        </footer>
+    </div>
+
+    <script>
+        // ========== 数据 ==========
+        const dictionary = [
+            {
+                id: 1,
+                title: "程序",
+                english: "Program",
+                category: "basic",
+                difficulty: "easy",
+                preview: "程序是一组按指定顺序执行的指令集合。这是任何计算任务的基础。",
+                explanation: `程序是一组按指定顺序执行的指令集合。在竞赛中，程序通过逐行执行代码来完成计算任务。理解程序的执行流程是学习编程的第一步。`,
+                syntax: `程序的执行流程：
+从 main() 函数开始 
+  ↓ 
+按顺序执行语句 
+  ↓ 
+遇到 return 0; 程序结束`,
+                keyPoints: [
+                    "程序的入口永远是 main() 函数",
+                    "执行顺序严格按照代码顺序，从上到下",
+                    "每条语句必须用分号 ; 结尾",
+                    "大括号 {} 用来组织代码块"
+                ],
+                example: `#include <iostream>
+using namespace std;
+
+int main() {
+    cout << "Hello, NOI!" << endl;
+    return 0;
+}`,
+                explanation2: "这个最简单的程序包含了所有必需的要素：包含头文件、定义 main 函数、输出结果、返回 0。程序从上到下依次执行每一条语句。",
+                tips: [
+                    "竞赛中 main 函数的返回值通常是 0（表示正常退出）",
+                    "可以在 main 函数之前定义多个其他函数",
+                    "main 函数是程序的起点，也是必需的入口点"
+                ],
+                commonMistakes: [
+                    {
+                        mistake: "忘记 #include <iostream> 或 using namespace std;",
+                        impact: "编译错误，程序无法编译",
+                        solution: "这两行是竞赛代码的必需部分，养成习惯"
+                    },
+                    {
+                        mistake: "main 函数最后忘记 return 0;",
+                        impact: "某些编译器会报错，不规范",
+                        solution: "竞赛规范代码必须有 return 0;"
+                    }
+                ],
+                relatedConcepts: ["变量", "函数", "输入输出"]
+            },
+
+            {
+                id: 2,
+                title: "变量",
+                english: "Variable",
+                category: "basic",
+                difficulty: "easy",
+                preview: "变量是程序中存储数据的容器。每个变量都有名称、类型和值。",
+                explanation: `变量是程序中存储数据的容器。每个变量都有：名称、类型、值。在竞赛中，变量是处理数据的基本单位。理解变量的本质是学好编程的关键。`,
+                syntax: `// 声明变量
+数据类型 变量名;
+
+// 声明并初始化
+数据类型 变量名 = 初始值;
+
+// 示例
+int age = 10;
+double height = 1.75;`,
+                keyPoints: [
+                    "变量必须先声明后使用",
+                    "变量名要有意义，建议用驼峰命名法（如：maxValue）",
+                    "同一个作用域内变量名不能重复",
+                    "变量在内存中占据一定的空间，空间大小由数据类型决定"
+                ],
+                example: `#include <iostream>
+using namespace std;
+
+int main() {
+    // 声明变量
+    int age = 10;
+    double height = 1.75;
+    
+    // 输出变量的值
+    cout << "年龄: " << age << endl;
+    cout << "身高: " << height << endl;
+    
+    // 修改变量的值
+    age = 11;
+    cout << "新年龄: " << age << endl;
+    
+    return 0;
+}`,
+                explanation2: "变量就像一个标记过的盒子。声明变量是'创建盒子'，赋值是'放数据进去'，使用变量是'取出数据'。每个变量有独立的存储空间。",
+                tips: [
+                    "变量名应该使用英文字母、数字和下划线，且不能以数字开头",
+                    "竞赛中常见的变量名：n（数据个数）、m（另一个参数）、ans（答案）",
+                    "定义变量时最好立即初始化，避免未初始化变量的陷阱"
+                ],
+                commonMistakes: [
+                    {
+                        mistake: "使用未声明的变量",
+                        impact: "编译错误，程序无法运行",
+                        solution: "任何变量必须先用 int/double/string 等声明"
+                    },
+                    {
+                        mistake: "变量名使用中文",
+                        impact: "编译错误或编码问题",
+                        solution: "竞赛规范要求变量名用英文"
+                    }
+                ],
+                relatedConcepts: ["数据类型", "赋值", "作用域"]
+            },
+
+            {
+                id: 3,
+                title: "数据类型",
+                english: "Data Type",
+                category: "data",
+                difficulty: "easy",
+                preview: "数据类型定义了变量能存储的数据范围和操作方式。正确选择数据类型很关键。",
+                explanation: `数据类型定义了变量能存储的数据范围和操作方式。C++ 的基本数据类型有：int、double、char、bool、long long 等。选择合适的数据类型是防止错误的第一步。`,
+                syntax: `int x = 100;              // 整数
+long long x = 1e18;        // 长整数
+double x = 3.14;           // 浮点数
+char x = 'A';              // 字符
+bool x = true;             // 布尔值
+string x = "hello";        // 字符串`,
+                keyPoints: [
+                    "int 能存储的范围约为 -2.1×10^9 到 2.1×10^9，对大多数竞赛题足够",
+                    "long long 范围约为 -9.2×10^18 到 9.2×10^18，处理大数时必需",
+                    "double 存储浮点数，精度约 15-17 位有效数字",
+                    "选择合适的数据类型能防止溢出和精度丢失"
+                ],
+                example: `#include <iostream>
+using namespace std;
+
+int main() {
+    int small = 2147483647;  // int 的最大值
+    
+    long long big = 9223372036854775807LL;  
+    // long long 最大值
+    
+    double pi = 3.14159265359;
+    char letter = 'A';
+    bool flag = true;
+    
+    cout << "int 最大值: " << small << endl;
+    cout << "long long 最大值: " << big << endl;
+    cout << "圆周率: " << pi << endl;
+    cout << "字符: " << letter << endl;
+    cout << "布尔: " << flag << endl;
+    
+    return 0;
+}`,
+                explanation2: "数据类型选择是竞赛编程的关键。选错会导致溢出，最终答案错误。需要根据题目数据范围合理选择。",
+                tips: [
+                    "竞赛中如果计算结果超过 2×10^9，必须用 long long",
+                    "处理阶乘、组合数等可能溢出的计算时，优先使用 long long",
+                    "输入 long long 时用 %lld（scanf）或 cin 自动识别",
+                    "long long 字面量后加 LL 确保编译正确：1000000000000LL"
+                ],
+                commonMistakes: [
+                    {
+                        mistake: "两个 int 相乘结果溢出，存到 long long 变量",
+                        impact: "溢出的数据已经损坏，后悔晚矣",
+                        solution: "声明变量时就用 long long，或强制转换：(long long)a * b"
+                    },
+                    {
+                        mistake: "忽视浮点数精度问题",
+                        impact: "计算结果有误差，最终答案错误",
+                        solution: "比较浮点数用 abs(a-b) < 1e-9，不用 a==b"
+                    }
+                ],
+                relatedConcepts: ["变量", "溢出", "强制转换"]
+            },
+
+            {
+                id: 4,
+                title: "输入输出",
+                english: "Input/Output",
+                category: "basic",
+                difficulty: "easy",
+                preview: "输入是从键盘读取数据，输出是向屏幕显示数据。这是程序与用户交互的方式。",
+                explanation: `输入（input）是指程序从键盘或文件读取数据。输出（output）是指程序向屏幕或文件写入数据。竞赛中的输入输出是程序与评测系统交互的方式。`,
+                syntax: `// 输出（cout）
+cout << 值 << endl;        // endl 表示换行
+cout << "文本" << 变量;
+
+// 输入（cin）
+cin >> 变量;               // 从标准输入读取一个数据
+cin >> x >> y >> z;        // 连续读取多个数据`,
+                keyPoints: [
+                    "cin 遇到空格或换行会自动分隔",
+                    "<< 是输出操作符（流插入运算符）",
+                    ">> 是输入操作符（流提取运算符）",
+                    "endl 会输出换行符并刷新缓冲区（比 \\n 稍慢）"
+                ],
+                example: `#include <iostream>
+using namespace std;
+
+int main() {
+    int a, b;
+    cout << "请输入两个整数: ";
+    cin >> a >> b;          
+    // 读取两个整数
+    
+    int sum = a + b;
+    cout << "a = " << a << endl;
+    cout << "b = " << b << endl;
+    cout << "sum = " << sum << endl;
+    
+    return 0;
+}`,
+                explanation2: "这是一个完整的输入输出程序。当你输入 '5 3' 时，程序会计算并输出 5, 3, 8 三行。输入输出是竞赛程序与评测系统通信的唯一方式。",
+                tips: [
+                    "竞赛中优先用 cin/cout，比 scanf/printf 更安全",
+                    "多行输出时，每行末尾用 endl 或 '\\n'",
+                    "竞赛时可以在 main 函数开头加：ios::sync_with_stdio(false);",
+                    "记住输入输出的格式必须与题目要求完全一致"
+                ],
+                commonMistakes: [
+                    {
+                        mistake: "混用 cin/cout 和 scanf/printf",
+                        impact: "可能导致输入输出顺序混乱",
+                        solution: "竞赛中统一使用 cin/cout"
+                    },
+                    {
+                        mistake: "忘记读取所有输入",
+                        impact: "程序等待输入而超时，或读取错误的数据",
+                        solution: "根据题目要求仔细读取所有必需的输入"
+                    }
+                ],
+                relatedConcepts: ["程序", "变量", "库函数"]
+            },
+
+            {
+                id: 5,
+                title: "赋值",
+                english: "Assignment",
+                category: "basic",
+                difficulty: "easy",
+                preview: "赋值是将一个值存储到变量中。赋值 = 和比较 == 不同，这是常见的错误。",
+                explanation: `赋值是指将一个值存储到变量中。赋值操作符是 =。赋值与比较不同：= 是赋值，== 是比较。这是初学者最容易搞混的概念。`,
+                syntax: `// 简单赋值
+变量 = 值;
+
+// 声明时赋值
+数据类型 变量 = 值;
+
+// 复合赋值
+变量 += 值;  // 等同于 变量 = 变量 + 值
+变量 -= 值;
+变量 *= 值;
+变量 /= 值;`,
+                keyPoints: [
+                    "赋值是从右到左的操作：右边的值存到左边的变量",
+                    "赋值表达式本身有返回值，就是被赋的值（但通常不使用）",
+                    "多个赋值可以链接：a = b = c = 5;（从右到左执行）"
+                ],
+                example: `#include <iostream>
+using namespace std;
+
+int main() {
+    int x = 10;
+    cout << "初始值：" << x << endl;
+    
+    // 重新赋值
+    x = 20;
+    cout << "赋值后：" << x << endl;
+    
+    // 复合赋值
+    x += 5;  // x = x + 5
+    cout << "加 5 后：" << x << endl;
+    
+    x *= 2;  // x = x * 2
+    cout << "乘 2 后：" << x << endl;
+    
+    // 链式赋值
+    int a, b, c;
+    a = b = c = 100;
+    cout << "a=" << a << ", b=" << b 
+         << ", c=" << c << endl;
+    
+    return 0;
+}`,
+                explanation2: "理解赋值的关键是：等号右边的表达式先被计算，然后结果存到左边的变量。旧值会被完全覆盖。",
+                tips: [
+                    "初始化变量时立即赋值，避免使用未初始化的变量",
+                    "竞赛中经常用到复合赋值来简化代码（如：cnt++）",
+                    "赋值后变量的旧值会被完全覆盖"
+                ],
+                commonMistakes: [
+                    {
+                        mistake: "在条件中使用 = 而不是 ==",
+                        impact: "代码逻辑错误，条件判断失效",
+                        solution: "条件判断必须用 ==，赋值用 ="
+                    },
+                    {
+                        mistake: "类型不匹配导致隐式转换",
+                        impact: "数据丢失或结果不符预期",
+                        solution: "明确数据类型，必要时显式转换"
+                    }
+                ],
+                relatedConcepts: ["变量", "数据类型", "比较"]
+            },
+
+            {
+                id: 6,
+                title: "整数类型",
+                english: "Integer Types",
+                category: "data",
+                difficulty: "medium",
+                preview: "int 和 long long 是竞赛中最常用的整数类型。溢出是很多题目失败的原因。",
+                explanation: `整数类型用于存储没有小数部分的数字。C++ 提供多种整数类型，其中 int 和 long long 是竞赛中最常用的。理解整数的范围和溢出很重要。`,
+                syntax: `short x = 100;           // 短整数（2 字节）
+int x = 1000;            // 整数（4 字节）
+long long x = 1e18;      // 长长整数（8 字节）
+unsigned int x = 4000000000u;  // 无符号整数`,
+                keyPoints: [
+                    "int: 范围 [-2^31, 2^31-1]，约 [-2.1×10^9, 2.1×10^9]",
+                    "long long: 范围 [-2^63, 2^63-1]，约 [-9.2×10^18, 9.2×10^18]",
+                    "溢出会导致数据循环（如 int 最大值加 1 变成最小值）",
+                    "竞赛中默认用 int，需要大数用 long long"
+                ],
+                example: `#include <iostream>
+#include <climits>
+using namespace std;
+
+int main() {
+    // int 的极限演示
+    int maxInt = 2147483647;
+    cout << "int 最大值: " << maxInt << endl;
+    cout << "int 最大值 + 1: " 
+         << (maxInt + 1) << endl;  
+    // 溢出！变成负数
+    
+    // long long 的使用
+    long long bigNum = 1000000000000000000LL;  
+    // 10^18
+    cout << "大数: " << bigNum << endl;
+    
+    // 计算阶乘时选择合适的类型
+    long long factorial = 1;
+    for (int i = 1; i <= 20; i++) {
+        factorial *= i;
+    }
+    cout << "20! = " << factorial << endl;
+    
+    return 0;
+}`,
+                explanation2: "选择正确的整数类型至关重要。许多竞赛错误就因为没有及时用 long long 而产生溢出。这是WA（答案错误）的常见原因。",
+                tips: [
+                    "题目中如果答案可能 > 2×10^9，立即用 long long",
+                    "两个 int 相乘会先计算再赋值，容易溢出。应该用 (long long)a * b",
+                    "输出 long long 用 cout 自动识别，或用 %lld（printf）",
+                    "常见的 10^n：10^9 ≈ 2^30，10^18 ≈ 2^60"
+                ],
+                commonMistakes: [
+                    {
+                        mistake: "int a, b; a * b 存到 long long",
+                        impact: "两个 int 的乘积先溢出，再存到 long long 时已经是错数据",
+                        solution: "应该写成 (long long)a * b 或声明 a, b 时就用 long long"
+                    },
+                    {
+                        mistake: "long long 字面量忘记写 LL",
+                        impact: "某些编译器会警告或出错",
+                        solution: "大数字面量后加 LL：1000000000000LL"
+                    }
+                ],
+                relatedConcepts: ["数据类型", "溢出", "强制转换"]
+            },
+
+            {
+                id: 7,
+                title: "浮点数类型",
+                english: "Floating Point Type",
+                category: "data",
+                difficulty: "medium",
+                preview: "浮点数用于表示小数。但要注意精度问题，不能直接用 == 比较。",
+                explanation: `浮点数用于存储有小数部分的数字。C++ 的 double 类型（双精度浮点）在竞赛中是标准选择。但浮点数有精度问题，需要特殊处理。`,
+                syntax: `double x = 3.14;
+double y = 1.5e-10;         // 科学记数法
+double z = 2e6;             // 2 × 10^6
+float a = 3.14f;            // 单精度（不推荐）`,
+                keyPoints: [
+                    "double 精度约 15-17 位有效数字",
+                    "float 精度约 6-7 位有效数字（竞赛中尽量避免）",
+                    "浮点数存储方式是科学记数法，存在精度误差",
+                    "不能用 == 比较两个浮点数，应该用 abs(a-b) < eps"
+                ],
+                example: `#include <iostream>
+#include <iomanip>
+#include <cmath>
+using namespace std;
+
+int main() {
+    double pi = 3.14159265359;
+    double e = 2.71828182846;
+    
+    cout << "π = " << pi << endl;
+    cout << "e = " << e << endl;
+    
+    // 格式化输出
+    cout << fixed << setprecision(6) 
+         << "格式化π: " << pi << endl;
+    
+    // 两个浮点数的比较
+    double a = 0.1 + 0.2;
+    double b = 0.3;
+    double eps = 1e-9;
+    
+    if (abs(a - b) < eps) {
+        cout << "相等（在精度范围内）" << endl;
+    } else {
+        cout << "不相等" << endl;
+    }
+    
+    return 0;
+}`,
+                explanation2: "浮点数的精度问题是竞赛编程中的常见陷阱。理解浮点数的本质很重要。总是要记住用 eps 进行比较。",
+                tips: [
+                    "比较浮点数时定义 eps = 1e-9，用 abs(a-b) < eps",
+                    "输出浮点数时用 fixed 和 setprecision 控制格式",
+                    "竞赛中涉及几何问题、概率问题通常需要 double",
+                    "科学记数法在处理很大或很小的数字时很有用"
+                ],
+                commonMistakes: [
+                    {
+                        mistake: "直接用 if (a == b) 比较浮点数",
+                        impact: "由于精度误差，本应相等的两个数被判为不等",
+                        solution: "使用 if (abs(a - b) < 1e-9)"
+                    },
+                    {
+                        mistake: "float 精度不够，计算结果误差大",
+                        impact: "最终答案错误",
+                        solution: "竞赛中总是用 double，不用 float"
+                    }
+                ],
+                relatedConcepts: ["数据类型", "精度误差", "格式化输出"]
+            },
+
+            {
+                id: 8,
+                title: "if-else 条件语句",
+                english: "Conditional Statements",
+                category: "control",
+                difficulty: "easy",
+                preview: "条件语句根据条件的真假执行不同的代码。是流程控制的基础。",
+                explanation: `条件语句根据条件的真假执行不同的代码块。if 语句是最基本的条件控制结构。通过条件判断，程序可以做出不同的决策。`,
+                syntax: `// 基本 if
+if (条件) {
+    // 条件为真时执行
+}
+
+// if-else
+if (条件) {
+    // 真
+} else {
+    // 假
+}
+
+// if-else if-else
+if (条件1) {
+    // ...
+} else if (条件2) {
+    // ...
+} else {
+    // ...
+}`,
+                keyPoints: [
+                    "条件是布尔表达式，结果为 true 或 false",
+                    "if 后面的大括号建议总是加上",
+                    "else if 可以有多个，形成多分支判断",
+                    "if-else 结构是从上到下评估，找到第一个真条件就停止"
+                ],
+                example: `#include <iostream>
+using namespace std;
+
+int main() {
+    int score;
+    cin >> score;
+    
+    // 多分支条件
+    if (score >= 90) {
+        cout << "优秀" << endl;
+    } else if (score >= 80) {
+        cout << "良好" << endl;
+    } else if (score >= 70) {
+        cout << "及格" << endl;
+    } else {
+        cout << "不及格" << endl;
+    }
+    
+    // 判断闰年
+    int year;
+    cin >> year;
+    
+    if (year % 400 == 0) {
+        cout << "闰年" << endl;
+    } else if (year % 100 == 0) {
+        cout << "平年" << endl;
+    } else if (year % 4 == 0) {
+        cout << "闰年" << endl;
+    } else {
+        cout << "平年" << endl;
+    }
+    
+    return 0;
+}`,
+                explanation2: "if-else 链是竞赛中最常见的多分支结构。记住从上到下按顺序检查条件，第一个为真的分支会被执行。",
+                tips: [
+                    "竞赛中 if-else 比 switch 更常用（因为条件更灵活）",
+                    "可以用逻辑运算符（&&、||、!）组合多个条件",
+                    "缩进和格式很重要，帮助理解代码逻辑",
+                    "嵌套 if 时要注意 else 属于哪个 if（C++ 规则：else 属于最近的 if）"
+                ],
+                commonMistakes: [
+                    {
+                        mistake: "在条件中用 = 代替 ==",
+                        impact: "代码会执行赋值而不是比较，导致逻辑错误",
+                        solution: "条件判断必须用 =="
+                    },
+                    {
+                        mistake: "单分支 if 省略大括号后加多条语句",
+                        impact: "只有第一条语句被当作 if 的体",
+                        solution: "竞赛规范要求所有 if-else 都加大括号"
+                    }
+                ],
+                relatedConcepts: ["比较运算符", "逻辑运算符", "switch"]
+            },
+
+            {
+                id: 9,
+                title: "for 循环",
+                english: "For Loop",
+                category: "control",
+                difficulty: "easy",
+                preview: "for 循环用于重复执行代码。是竞赛中最常用的循环结构。",
+                explanation: `for 循环用于重复执行一段代码。它是竞赛中最常用的循环结构，适合次数明确的重复。掌握 for 循环是竞赛编程的必修课。`,
+                syntax: `// 基本 for 循环
+for (初始化; 条件; 增量) {
+    // 循环体
+}
+
+// 例如：从 1 循环到 n
+for (int i = 1; i <= n; i++) {
+    // i 从 1 到 n
+}`,
+                keyPoints: [
+                    "for 循环分为三部分：初始化、条件、增量",
+                    "初始化在循环开始前执行一次",
+                    "每次循环前检查条件，为真则执行循环体，为假则退出",
+                    "每次循环体执行后，执行增量部分",
+                    "循环变量的作用域限制在 for 循环内"
+                ],
+                example: `#include <iostream>
+using namespace std;
+
+int main() {
+    // 输出 1 到 10
+    for (int i = 1; i <= 10; i++) {
+        cout << i << " ";
+    }
+    cout << endl;
+    
+    // 计算 1 到 100 的和
+    int sum = 0;
+    for (int i = 1; i <= 100; i++) {
+        sum += i;
+    }
+    cout << "1到100的和: " << sum << endl;
+    
+    // 从 10 倒数到 1
+    for (int i = 10; i >= 1; i--) {
+        cout << i << " ";
+    }
+    cout << endl;
+    
+    // 嵌套循环：打印乘法表
+    for (int i = 1; i <= 9; i++) {
+        for (int j = 1; j <= 9; j++) {
+            cout << i * j << " ";
+        }
+        cout << endl;
+    }
+    
+    return 0;
+}`,
+                explanation2: "for 循环的执行流程是：初始化 → 检查条件 → 执行体 → 增量 → 回到条件检查。这个流程重复直到条件为假。",
+                tips: [
+                    "竞赛中大多数重复都使用 for 循环",
+                    "嵌套循环时要注意时间复杂度（2层循环 O(n²)，3层循环 O(n³)）",
+                    "循环变量通常从 1 或 0 开始，具体取决于题目",
+                    "可以在循环中修改循环变量，但不推荐（容易出bug）"
+                ],
+                commonMistakes: [
+                    {
+                        mistake: "循环条件写错（如写 i < n 而题目需要 i <= n）",
+                        impact: "循环次数错误，最后一个元素被漏掉",
+                        solution: "仔细检查边界条件，确保循环次数正确"
+                    },
+                    {
+                        mistake: "嵌套循环次数过多（3层以上且都是 n）",
+                        impact: "时间复杂度过高，TLE（超时）",
+                        solution: "优化算法或减少循环层数"
+                    }
+                ],
+                relatedConcepts: ["while 循环", "break", "continue"]
+            },
+
+            {
+                id: 10,
+                title: "while 循环",
+                english: "While Loop",
+                category: "control",
+                difficulty: "medium",
+                preview: "while 循环根据条件重复执行。适合条件不清楚的循环。",
+                explanation: `while 循环根据条件重复执行代码。与 for 不同，while 循环适合条件不清楚、需要动态判断何时退出的场景。两种循环可以互换，选择最清晰的。`,
+                syntax: `// 基本 while 循环
+while (条件) {
+    // 循环体
+    // 通常在这里修改条件相关的变量
+}
+
+// 示例：读取直到输入 0
+while (x != 0) {
+    // 处理 x
+    cin >> x;
+}`,
+                keyPoints: [
+                    "while 循环在条件为真时执行，条件为假时退出",
+                    "条件在每次循环前检查",
+                    "如果条件初始为假，循环体一次都不执行",
+                    "必须在循环体内修改条件变量，否则陷入死循环"
+                ],
+                example: `#include <iostream>
+using namespace std;
+
+int main() {
+    // 方法1：计数（和 for 等价）
+    int i = 1;
+    while (i <= 10) {
+        cout << i << " ";
+        i++;
+    }
+    cout << endl;
+    
+    // 方法2：读取直到输入 0
+    int n;
+    int sum = 0;
+    while (cin >> n && n != 0) {
+        sum += n;
+    }
+    cout << "总和: " << sum << endl;
+    
+    // 方法3：计算 2 的幂
+    int power = 1;
+    while (power <= 1000000) {
+        cout << power << " ";
+        power *= 2;
+    }
+    cout << endl;
+    
+    return 0;
+}`,
+                explanation2: "while 循环常用于处理 ' 不知道要循环多少次 ' 的情况，比如读取直到特定条件。for 循环和 while 循环在功能上是等价的，可以相互转换。",
+                tips: [
+                    "竞赛中 for 和 while 可以互换，选择最清晰的",
+                    "do-while 循环（先执行再判断）在竞赛中很少用",
+                    "while 循环的条件最好是简单清晰的，复杂条件容易出bug",
+                    "小心死循环：条件永远为真，程序无法结束"
+                ],
+                commonMistakes: [
+                    {
+                        mistake: "死循环：while(true) 或条件永不变假",
+                        impact: "程序无限运行，最终 TLE",
+                        solution: "确保循环体内会修改条件相关的变量"
+                    },
+                    {
+                        mistake: "条件判断错误",
+                        impact: "循环提前退出或永不退出",
+                        solution: "仔细检查循环条件的逻辑"
+                    }
+                ],
+                relatedConcepts: ["for 循环", "break", "continue"]
+            },
+
+            {
+                id: 11,
+                title: "函数",
+                english: "Function",
+                category: "function",
+                difficulty: "medium",
+                preview: "函数是可重复使用的代码块。避免代码重复，使程序更清晰。",
+                explanation: `函数是一段可重复使用的代码块。定义函数可以避免重复代码，使程序更模块化、易维护。竞赛中经常用函数来实现特定的算法。`,
+                syntax: `// 函数定义
+返回类型 函数名(参数列表) {
+    // 函数体
+    return 返回值;  // 如果返回类型不是 void
+}
+
+// 函数调用
+函数名(参数值);
+结果 = 函数名(参数值);`,
+                keyPoints: [
+                    "函数必须先定义后使用",
+                    "返回类型可以是任何数据类型或 void（不返回值）",
+                    "参数列表中每个参数都要指定类型",
+                    "return 语句会立即退出函数，返回指定的值",
+                    "函数的定义通常在 main 函数之前"
+                ],
+                example: `#include <iostream>
+using namespace std;
+
+// 函数定义：计算最大值
+int findMax(int a, int b) {
+    if (a > b) {
+        return a;
+    } else {
+        return b;
+    }
+}
+
+// 函数定义：计算阶乘
+int factorial(int n) {
+    int result = 1;
+    for (int i = 2; i <= n; i++) {
+        result *= i;
+    }
+    return result;
+}
+
+// 无返回值的函数
+void printTimes(string text, int times) {
+    for (int i = 0; i < times; i++) {
+        cout << text << endl;
+    }
+}
+
+int main() {
+    // 调用函数
+    int max_val = findMax(10, 20);
+    cout << "最大值: " << max_val << endl;
+    
+    int fact = factorial(5);
+    cout << "5! = " << fact << endl;
+    
+    printTimes("Hello", 3);
+    
+    return 0;
+}`,
+                explanation2: "函数的设计要遵循单一职责原则：每个函数只做一件事。好的函数设计能让代码更易读、更易维护。",
+                tips: [
+                    "竞赛中经常用函数来实现特定算法（如排序、搜索等）",
+                    "函数名要有意义，能表达函数的功能",
+                    "避免过度的函数调用层次，深层调用会增加开销",
+                    "递归函数要确保有 base case（基础情况），否则无限递归"
+                ],
+                commonMistakes: [
+                    {
+                        mistake: "返回类型与 return 语句的类型不匹配",
+                        impact: "可能导致类型转换或值丢失",
+                        solution: "确保 return 语句的类型与函数的返回类型一致"
+                    },
+                    {
+                        mistake: "在 void 函数中写 return 值;",
+                        impact: "编译错误",
+                        solution: "void 函数可以写 return; 但不能 return 值;"
+                    }
+                ],
+                relatedConcepts: ["参数", "返回值", "递归"]
+            },
+
+            {
+                id: 12,
+                title: "标准库和 cin/cout",
+                english: "Standard Library",
+                category: "function",
+                difficulty: "easy",
+                preview: "iostream 库提供输入输出功能。是竞赛程序必不可少的。",
+                explanation: `iostream 是 C++ 标准库中的输入输出库。提供 cin、cout 等对象，用于与用户交互。几乎所有竞赛程序都需要这个库。`,
+                syntax: `#include <iostream>
+using namespace std;
+
+// 输入
+cin >> 变量;
+
+// 输出
+cout << 值;
+
+// 换行
+cout << endl;`,
+                keyPoints: [
+                    "#include <iostream> 是竞赛代码的必需部分",
+                    "using namespace std; 让我们省略 std:: 前缀",
+                    "cin 可以连续读取多个值：cin >> a >> b >> c;",
+                    "cout 可以连续输出：cout << a << \" \" << b << endl;"
+                ],
+                example: `#include <iostream>
+using namespace std;
+
+int main() {
+    // 基本输入输出
+    int a, b;
+    cout << "请输入两个整数: ";
+    cin >> a >> b;
+    
+    cout << "你输入的是: " << a 
+         << " 和 " << b << endl;
+    
+    // 格式化输出
+    double pi = 3.14159;
+    cout << "π ≈ " << pi << endl;
+    
+    // 多行输出
+    for (int i = 1; i <= 3; i++) {
+        cout << "第 " << i << " 行" << endl;
+    }
+    
+    return 0;
+}`,
+                explanation2: "iostream 库是竞赛编程的基础，几乎所有程序都需要用到。理解如何正确使用 cin 和 cout 非常重要。",
+                tips: [
+                    "竞赛中可以加速 IO：ios::sync_with_stdio(false);",
+                    "endl 会刷新缓冲区，比 '\\n' 慢，大量输出时用 '\\n'",
+                    "cout << fixed << setprecision(6) 控制浮点数输出",
+                    "记住输入输出的格式必须与题目要求完全一致"
+                ],
+                commonMistakes: [
+                    {
+                        mistake: "忘记 #include <iostream>",
+                        impact: "编译错误，cin/cout 未定义",
+                        solution: "任何使用 cin/cout 的程序都需要包含 iostream"
+                    },
+                    {
+                        mistake: "大量输出时用 endl",
+                        impact: "每个 endl 都刷新缓冲区，程序变慢，可能 TLE",
+                        solution: "改用 '\\n'，或在程序开头关闭同步"
+                    }
+                ],
+                relatedConcepts: ["输入输出", "程序框架", "库函数"]
+            }
+        ];
+
+        let currentCards = [...dictionary];
+
+        const categoryNames = {
+            'basic': '🔧 基础概念',
+            'data': '📊 数据类型',
+            'control': '🎯 控制语句',
+            'function': '⚙️ 函数与库'
+        };
+
+        const difficultyNames = {
+            'easy': '⭐ 基础',
+            'medium': '⭐⭐ 进阶',
+            'hard': '⭐⭐⭐ 高难'
+        };
+
+        // ========== 首页渲染 ==========
+        function renderIndex() {
+            const indexContent = document.getElementById('indexContent');
+            indexContent.innerHTML = '';
+            
+            if (currentCards.length === 0) {
+                indexContent.innerHTML = '<div class="no-results"><div class="no-results-icon">🔍</div><div class="no-results-text">没有找到匹配的知识点</div></div>';
+                return;
+            }
+
+            currentCards.forEach(item => {
+                const card = document.createElement('div');
+                card.className = `topic-card category-${item.category}`;
+                
+                card.innerHTML = `
+                    <div class="topic-card-header">
+                        <span class="topic-badge">${categoryNames[item.category]}</span>
+                        <div class="topic-card-title">${item.title}</div>
+                        <div class="topic-card-english">${item.english}</div>
+                    </div>
+                    <div class="topic-card-body">
+                        <div class="topic-preview">${item.preview}</div>
+                        <div class="topic-meta">
+                            <span class="difficulty-badge ${item.difficulty}">${difficultyNames[item.difficulty]}</span>
+                            <button class="learn-btn" onclick="viewDetail(${item.id})">查看详情 →</button>
+                        </div>
+                    </div>
+                `;
+                
+                card.onclick = (e) => {
+                    if (!e.target.classList.contains('learn-btn')) {
+                        viewDetail(item.id);
+                    }
+                };
+                
+                indexContent.appendChild(card);
+            });
+        }
+
+        // ========== 详情页渲染 ==========
+        function renderDetail(item) {
+            let html = `
+                <button class="back-button" onclick="goToIndex()">← 返回首页</button>
+                
+                <div class="detail-title">${item.title}</div>
+                <div class="detail-english">${item.english}</div>
+                
+                <div class="detail-meta">
+                    <span class="topic-badge">${categoryNames[item.category]}</span>
+                    <span class="difficulty-badge ${item.difficulty}">${difficultyNames[item.difficulty]}</span>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">📖 核心概念</div>
+                    <div class="concept-explanation">${item.explanation}</div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">💻 语法格式</div>
+                    <div class="syntax-block"><pre>${escapeHtml(item.syntax)}</pre></div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">🎯 核心要点</div>
+                    <div class="key-points">
+                        <ul>
+                            ${item.keyPoints.map(point => `<li>${point}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="example-section">
+                        <div class="example-title">💡 完整代码示例</div>
+                        <div class="example-code"><pre>${escapeHtml(item.example)}</pre></div>
+                        <div class="explanation-text">${item.explanation2}</div>
+                    </div>
+                </div>
+            `;
+
+            if (item.commonMistakes && item.commonMistakes.length > 0) {
+                html += `
+                    <div class="section">
+                        <div class="section-title">❌ 常见错误</div>
+                        <div class="mistakes-section">
+                            ${item.commonMistakes.map(m => `
+                                <div class="mistake-item">
+                                    <div class="mistake-label">错误：${m.mistake}</div>
+                                    <div class="explanation-text"><strong>💥 影响：</strong>${m.impact}</div>
+                                    <div class="explanation-text"><strong>✅ 解决：</strong>${m.solution}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (item.tips && item.tips.length > 0) {
+                html += `
+                    <div class="section">
+                        <div class="section-title">⚡ 竞赛技巧</div>
+                        <div class="alert alert-tip">
+                            <ul>
+                                ${item.tips.map(tip => `<li>${tip}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (item.relatedConcepts && item.relatedConcepts.length > 0) {
+                html += `
+                    <div class="section">
+                        <div class="section-title">🔗 相关概念</div>
+                        <div class="related-section">
+                            <div class="related-tags">
+                                ${item.relatedConcepts.map(concept => `
+                                    <span class="related-tag" onclick="searchConcept('${concept}')">${concept}</span>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('detailContent').innerHTML = html;
+        }
+
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        // ========== 页面切换 ==========
+        window.goToIndex = function() {
+            document.getElementById('indexPage').style.display = 'block';
+            document.getElementById('detailPage').style.display = 'none';
+            document.getElementById('breadcrumb').classList.remove('show');
+            renderIndex();
+        };
+
+        window.viewDetail = function(id) {
+            const item = dictionary.find(d => d.id === id);
+            if (item) {
+                renderDetail(item);
+                document.getElementById('indexPage').style.display = 'none';
+                document.getElementById('detailPage').style.display = 'block';
+                document.getElementById('breadcrumb').classList.add('show');
+                document.getElementById('currentTopic').textContent = item.title;
+                window.scrollTo(0, 0);
+            }
+        };
+
+        window.searchConcept = function(concept) {
+            document.getElementById('searchBox').value = concept;
+            filterCards();
+            goToIndex();
+        };
+
+        // ========== 过滤功能 ==========
+        function filterCards() {
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+            const selectedCategory = document.getElementById('categoryFilter').value;
+            const selectedDifficulty = document.getElementById('difficultyFilter').value;
+
+            currentCards = dictionary.filter(item => {
+                const matchesSearch = item.title.toLowerCase().includes(searchTerm) ||
+                                    item.english.toLowerCase().includes(searchTerm) ||
+                                    item.preview.toLowerCase().includes(searchTerm);
+                
+                const matchesCategory = !selectedCategory || item.category === selectedCategory;
+                const matchesDifficulty = !selectedDifficulty || item.difficulty === selectedDifficulty;
+
+                return matchesSearch && matchesCategory && matchesDifficulty;
+            });
+
+            renderIndex();
+        }
+
+        document.getElementById('searchBox').addEventListener('input', filterCards);
+        document.getElementById('categoryFilter').addEventListener('change', filterCards);
+        document.getElementById('difficultyFilter').addEventListener('change', filterCards);
+
+        // 初始渲染
+        renderIndex();
+    </script>
+</body>
+</html>
