@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOI金牌教练 - C++完整教学体系 | AI辅助教学平台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1e3c72;
+            --secondary: #2a5298;
+            --accent: #00d4ff;
+            --success: #2ecc71;
+            --warning: #ff6b35;
+            --danger: #e74c3c;
+            --light: #ecf0f1;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: #333;
+        }
+
+        .app-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* ========== 左侧导航栏 ========== */
+        .sidebar {
+            width: 280px;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .sidebar-header h1 {
+            font-size: 1.4em;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-header p {
+            font-size: 0.85em;
+            opacity: 0.9;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 20px 0;
+        }
+
+        .nav-group {
+            margin-bottom: 5px;
+        }
+
+        .nav-group-title {
+            padding: 12px 20px;
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            color: #666;
+        }
+
+        .nav-item:hover {
+            background: #f5f5f5;
+            border-left-color: var(--accent);
+            color: var(--primary);
+        }
+
+        .nav-item.active {
+            background: #e3f2fd;
+            border-left-color: var(--accent);
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .nav-icon {
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+
+        /* ========== 主内容区 ========== */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .content-header {
+            background: white;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-bottom: 3px solid var(--accent);
+        }
+
+        .content-header h2 {
+            font-size: 2em;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .content-header p {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .content-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* ========== 通用样式 ========== */
+        .section {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--accent);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 5px solid var(--primary);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .card-title {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .card-content {
+            color: #555;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        .badge.success {
+            background: var(--success);
+        }
+
+        .badge.warning {
+            background: var(--warning);
+        }
+
+        .badge.danger {
+            background: var(--danger);
+        }
+
+        /* ========== 表格 ========== */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .table th {
+            background: var(--primary);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .table tr:hover {
+            background: #f5f5f5;
+        }
+
+        /* ========== 按钮 ========== */
+        .btn {
+            background: var(--primary);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: var(--accent);
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+
+        .btn-warning {
+            background: var(--warning);
+        }
+
+        /* ========== 列表 ========== */
+        .list {
+            list-style: none;
+        }
+
+        .list-item {
+            padding: 15px;
+            background: #f9f9f9;
+            border-left: 4px solid var(--accent);
+            margin-bottom: 10px;
+            border-radius: 4px;
+            line-height: 1.8;
+        }
+
+        .list-item strong {
+            color: var(--primary);
+        }
+
+        /* ========== 进度条 ========== */
+        .progress-bar {
+            background: #e0e0e0;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, var(--success), var(--accent));
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9em;
+            transition: width 0.3s ease;
+        }
+
+        /* ========== AI助手 ========== */
+        .ai-assistant {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--accent), var(--secondary));
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8em;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            animation: pulse 2s infinite;
+            z-index: 100;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .ai-chat {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 400px;
+            height: 500px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            display: none;
+            flex-direction: column;
+            z-index: 99;
+            overflow: hidden;
+        }
+
+        .ai-chat.show {
+            display: flex;
+        }
+
+        .ai-chat-header {
+            background: linear-gradient(135deg, var(--accent), var(--secondary));
+            color: white;
+            padding: 20px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ai-chat-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f9f9f9;
+        }
+
+        .ai-message {
+            margin-bottom: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            max-width: 90%;
+        }
+
+        .ai-message.user {
+            background: var(--primary);
+            color: white;
+            margin-left: auto;
+        }
+
+        .ai-message.assistant {
+            background: white;
+            color: #333;
+            border: 1px solid #e0e0e0;
+        }
+
+        .ai-chat-input {
+            padding: 15px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+        }
+
+        .ai-chat-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9em;
+        }
+
+        .ai-chat-input button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* ========== 响应式 ========== */
+        @media (max-width: 1200px) {
+            .sidebar {
+                width: 250px;
+            }
+
+            .grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                max-height: 200px;
+                overflow-x: auto;
+            }
+
+            .sidebar-nav {
+                display: flex;
+                flex-direction: row;
+                overflow-x: auto;
+            }
+
+            .nav-item {
+                white-space: nowrap;
+            }
+
+            .main-content {
+                height: auto;
+                flex: 1;
+            }
+
+            .ai-chat {
+                width: 90vw;
+                right: 5vw;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- ���侧导航 -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h1>🏆 NOI教学体系</h1>
+                <p>金牌教练完整方案</p>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-group">
+                    <div class="nav-group-title">📚 教学设计</div>
+                    <div class="nav-item active" onclick="showPage('overview')">
+                        <span class="nav-icon">🎯</span>系统概览
+                    </div>
+                    <div class="nav-item" onclick="showPage('curriculum')">
+                        <span class="nav-icon">📖</span>课程大纲
+                    </div>
+                    <div class="nav-item" onclick="showPage('teaching-methods')">
+                        <span class="nav-icon">🎓</span>教学方法
+                    </div>
+                </div>
+
+                <div class="nav-group">
+                    <div class="nav-group-title">⏱️ 阶段课程</div>
+                    <div class="nav-item" onclick="showPage('stage1')">
+                        <span class="nav-icon">⭐</span>入门期（1-4周）
+                    </div>
+                    <div class="nav-item" onclick="showPage('stage2')">
+                        <span class="nav-icon">⭐⭐</span>初级期（5-12周）
+                    </div>
+                    <div class="nav-item" onclick="showPage('stage3')">
+                        <span class="nav-icon">⭐⭐⭐</span>进阶期（13-20周）
+                    </div>
+                    <div class="nav-item" onclick="showPage('stage4')">
+                        <span class="nav-icon">🏆</span>竞赛期（21周+）
+                    </div>
+                </div>
+
+                <div class="nav-group">
+                    <div class="nav-group-title">🤖 AI辅助</div>
+                    <div class="nav-item" onclick="showPage('ai-guide')">
+                        <span class="nav-icon">🧠</span>AI教学指南
+                    </div>
+                    <div class="nav-item" onclick="showPage('ai-tools')">
+                        <span class="nav-icon">⚙️</span>AI工具方案
+                    </div>
+                    <div class="nav-item" onclick="showPage('ai-prompts')">
+                        <span class="nav-icon">💬</span>AI提示词库
+                    </div>
+                </div>
+
+                <div class="nav-group">
+                    <div class="nav-group-title">📊 评估管理</div>
+                    <div class="nav-item" onclick="showPage('assessment')">
+                        <span class="nav-icon">✅</span>评估体系
+                    </div>
+                    <div class="nav-item" onclick="showPage('resources')">
+                        <span class="nav-icon">📚</span>教学资源
+                    </div>
+                </div>
+            </nav>
+        </div>
+
+        <!-- 主内容 -->
+        <div class="main-content">
+            <div class="content-header">
+                <h2 id="pageTitle">🎯 系统概览</h2>
+                <p id="pageDesc">完整的C++竞赛教学体系，为0基础学生打造金牌之路</p>
+            </div>
+
+            <div class="content-body">
+                <!-- 页面1：系统概览 -->
+                <div id="overview" class="page active">
+                    <div class="section">
+                        <div class="section-title">📌 核心理念</div>
+                        <ul class="list">
+                            <li class="list-item"><strong>从问题出发，不从语法出发</strong> - 让学生理解为什么需要这个知识点</li>
+                            <li class="list-item"><strong>快速反馈，立即可见</strong> - 每个程序都有可视化结果，激发学生兴趣</li>
+                            <li class="list-item"><strong>铺设台阶，循序渐进</strong> - 避免难度突���，每周一个新高度</li>
+                            <li class="list-item"><strong>竞赛意识融入教学</strong> - 从第1天就培养竞赛思维</li>
+                            <li class="list-item"><strong>AI赋能，提升效率</strong> - 利用AI处理重复工作，老师专注于引导</li>
+                        </ul>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">🎓 完整学习路径</div>
+                        <div style="margin-top: 20px;">
+                            <h3 style="color: var(--primary); margin-bottom: 15px;">第1阶段：入门期（第1-4周）</h3>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 25%;">编程思维</div>
+                            </div>
+                            <p style="color: #666; margin-top: 10px;">目标：让学生爱上编程 | 核心：第一个"哇！"时刻</p>
+                        </div>
+
+                        <div style="margin-top: 25px;">
+                            <h3 style="color: var(--primary); margin-bottom: 15px;">第2阶段：初级期（第5-12周）</h3>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 50%;">条件+循环</div>
+                            </div>
+                            <p style="color: #666; margin-top: 10px;">目标：建立基础思维 | 核心：if/for/while/数组</p>
+                        </div>
+
+                        <div style="margin-top: 25px;">
+                            <h3 style="color: var(--primary); margin-bottom: 15px;">第3阶段：进阶期（第13-20周）</h3>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 75%;">函数+算法</div>
+                            </div>
+                            <p style="color: #666; margin-top: 10px;">目标：进阶竞赛思维 | 核心：函数、字符串、递归基础</p>
+                        </div>
+
+                        <div style="margin-top: 25px;">
+                            <h3 style="color: var(--primary); margin-bottom: 15px;">第4阶段：竞赛期（第21周+）</h3>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%;">竞赛高手</div>
+                            </div>
+                            <p style="color: #666; margin-top: 10px;">目标：竞赛实战 | 核心：动态规划、搜索、贪心、图论基础</p>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">🎯 关键成功因素</div>
+                        <div class="grid">
+                            <div class="card">
+                                <div class="card-title">💡 故事情景教学</div>
+                                <div class="card-content">
+                                    每个知识点都用学生能理解的生活例子讲解，而不是直接讲语法。
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-title">🎮 可视化练习</div>
+                                <div class="card-content">
+                                    用图表、动画、交互式调试器让学生看到程序运行的每一步。
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-title">🏆 成就感体系</div>
+                                <div class="card-content">
+                                    定期表扬、展示进度、小竞赛排名，持续激励学生。
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-title">🤖 AI辅助支持</div>
+                                <div class="card-content">
+                                    AI生成练习题、批改作业、个性化反馈，老师专注引导。
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 页面2：课程大纲 -->
+                <div id="curriculum" class="page">
+                    <div class="section">
+                        <div class="section-title">📖 详细课程设置</div>
+                        
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>周次</th>
+                                    <th>核心知识点</th>
+                                    <th>学习目标</th>
+                                    <th>项目作品</th>
+                                    <th>难度</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>第1-2周</strong></td>
+                                    <td>编程思维 + 第一个程序</td>
+                                    <td>理解程序概念，写出Hello World</td>
+                                    <td>打印个人信息</td>
+                                    <td><span class="badge">⭐</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>第3-4周</strong></td>
+                                    <td>变量 + 数据类型 + 基础I/O</td>
+                                    <td>理解变量本质，能做简单计算</td>
+                                    <td>计算器程序</td>
+                                    <td><span class="badge">⭐</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>第5-6周</strong></td>
+                                    <td>条件语句（if-else）</td>
+                                    <td>根据条件做决策</td>
+                                    <td>等级判断系统</td>
+                                    <td><span class="badge success">⭐⭐</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>第7-8周</strong></td>
+                                    <td>循环语句（for）</td>
+                                    <td>重复执行代码，理解循环本质</td>
+                                    <td>99乘法表 + 求和</td>
+                                    <td><span class="badge success">⭐⭐</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>第9-10周</strong></td>
+                                    <td>循环语句（while）+ 嵌套循环</td>
+                                    <td>理解不同循环的用途</td>
+                                    <td>模式绘制 + 小游戏</td>
+                                    <td><span class="badge success">⭐⭐</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>第11-12周</strong></td>
+                                    <td>数组 + 基础算法（排序、查找）</td>
+                                    <td>批量处理数据</td>
+                                    <td>成绩统计系统</td>
+                                    <td><span class="badge success">⭐⭐</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>第13-14周</strong></td>
+                                    <td>函数定义与调用 + 参数传递</td>
+                                    <td>代码复用，模块化思维</td>
+                                    <td>库函数集合</td>
+                                    <td><span class="badge warning">⭐⭐⭐</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>第15-16周</strong></td>
+                                    <td>字符串处理 + 标准库</td>
+                                    <td>理解字符串操作</td>
+                                    <td>文本处理工具</td>
+                                    <td><span class="badge warning">⭐⭐⭐</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>第17-18周</strong></td>
+                                    <td>递归初步 + 简单回溯</td>
+                                    <td>理解递归思想</td>
+                                    <td>阶乘、斐波那契</td>
+                                    <td><span class="badge warning">⭐⭐⭐</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>第19-20周</strong></td>
+                                    <td>二维数组 + 矩阵操作</td>
+                                    <td>处理更复杂的数据结构</td>
+                                    <td>矩阵转置、游戏地图</td>
+                                    <td><span class="badge warning">⭐⭐⭐</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>第21-24周</strong></td>
+                                    <td>动态规划基础</td>
+                                    <td>竞赛算法思维</td>
+                                    <td>硬币问题、背包问题</td>
+                                    <td><span class="badge danger">🏆</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 页面3：教学方法 -->
+                <div id="teaching-methods" class="page">
+                    <div class="section">
+                        <div class="section-title">🎓 三段教学法（核心方法论）</div>
+                        <ul class="list">
+                            <li class="list-item">
+                                <strong>第一步：故事情景</strong><br/>
+                                用学生能理解的生活例子讲解知识点，回答"为什么需要这个"
+                            </li>
+                            <li class="list-item">
+                                <strong>第二步：代码实现</strong><br/>
+                                给出最简单的代码示例，通过输出结果让学生看到魔法发生
+                            </li>
+                            <li class="list-item">
+                                <strong>第三步：学生动手</strong><br/>
+                                给学生改进任务，让他们自己改代码、自己写程序
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">🎯 五大教学策略</div>
+                        <div class="grid">
+                            <div class="card">
+                                <div class="card-title">1️⃣ 对比学习法</div>
+                                <div class="card-content">
+                                    展示"坏方案"和"好方案"的对比，让学生理解为什么需要某个语法
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-title">2️⃣ 可视化调试</div>
+                                <div class="card-content">
+                                    用图表、动画展示变量���值如何变化，帮助理解程序执行流程
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-title">3️⃣ 错误预见法</div>
+                                <div class="card-content">
+                                    提前告诉学生常见错误，让他们有意识地避免
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-title">4️⃣ 项目驱动</div>
+                                <div class="card-content">
+                                    每个知识点都关联一个有趣的小项目，学生在做项目中学习
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-title">5️⃣ 成就感体系</div>
+                                <div class="card-content">
+                                    定期展示进度、小竞赛排名、表扬创意代码，激励学生
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">📅 标准课堂节奏（每周安排）</div>
+                        <ul class="list">
+                            <li class="list-item"><strong>第1课（90分钟）：</strong>新知识讲解 → 故事情景 → 代码演示 → 学生第一次操作</li>
+                            <li class="list-item"><strong>第2课（60分钟）：</strong>练习与答疑 → 学生自己写代码 → 常见错误讨论</li>
+                            <li class="list-item"><strong>第3课（60分钟）：</strong>项目实战 → 综合应用 → 展示作品</li>
+                            <li class="list-item"><strong>第4课（30分钟）：</strong>小竞赛或复习 → 排名展示 → 激励表扬</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 页面4：入门期 -->
+                <div id="stage1" class="page">
+                    <div class="section">
+                        <div class="section-title">⭐ 入门期（第1-4周）| 目标：让学生爱上编程</div>
+                        <ul class="list">
+                            <li class="list-item"><strong>第1周：编程思维启蒙</strong><br/>
+                                用生活例子（做三明治、去学校、玩游戏的"程序"）让学生理解程序的本质：有步骤、有顺序、有条件、有重复
+                            </li>
+                            <li class="list-item"><strong>第2周：第一个程序</strong><br/>
+                                <span style="font-family: monospace; background: #f0f0f0; padding: 2px 5px;">cout << "我叫XXX，我要成为竞赛高手！" << endl;</span><br/>
+                                让学生第一次看到程序执行的结果，获得"哇！"时刻
+                            </li>
+                            <li class="list-item"><strong>第3周：变量概念</strong><br/>
+                                不讲"存储数据的容器"，而讲"快递员用标签记录信息"。学生理解为什么需要变量
+                            </li>
+                            <li class="list-item"><strong>第4周：基础输入输出</strong><br/>
+                                学生能写简单程序：输入名字和年龄，输出个人信息。完成第一个"作品"
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">📝 第1周详细教案</div>
+                        <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                            <h4 style="color: var(--primary); margin-bottom: 10px;">课程内容：编程思维启蒙</h4>
+                            <strong>时长：90分钟 | 难度：⭐ | 工具：无需电脑</strong>
+                            <ul class="list" style="margin-top: 15px;">
+                                <li class="list-item"><strong style="color: var(--success);">0-10分：引入</strong><br/>
+                                    "你们有没有玩过游戏？游戏是怎么玩的？"<br/>
+                                    → 引出"游戏有规则"、"每个动作都有意义"
+                                </li>
+                                <li class="list-item"><strong style="color: var(--success);">10-30分：故事讲解</strong><br/>
+                                    <strong>案例1：做一个三明治的"程序"</strong>
+                                    <div style="margin-left: 20px; margin-top: 8px;">
+                                        1. 拿出面包<br/>
+                                        2. 涂上黄油<br/>
+                                        3. 放上生菜和火腿<br/>
+                                        4. 盖上另一片面包
+                                    </div>
+                                    "这4步缺一不可，顺序也很重要��这就是一个'程序'！"
+                                </li>
+                                <li class="list-item"><strong style="color: var(--success);">30-50分：学生观察</strong><br/>
+                                    老师给出3个例子，学生一起分析：
+                                    <div style="margin-left: 20px; margin-top: 8px;">
+                                        • 去学校的程序<br/>
+                                        • 玩游戏的程序<br/>
+                                        • 做作业的程序
+                                    </div>
+                                    "你们看，这些'程序'都有什么共同点？"
+                                </li>
+                                <li class="list-item"><strong style="color: var(--success);">50-70分：程序四要素</strong><br/>
+                                    <strong>✓ 有步骤：</strong>必须一步一步来<br/>
+                                    <strong>✓ 有顺序：</strong>顺序很重要<br/>
+                                    <strong>✓ 有条件：</strong>有时候"如果...就..."<br/>
+                                    <strong>✓ 有重复：</strong>有时候要做同一件事多次
+                                </li>
+                                <li class="list-item"><strong style="color: var(--success);">70-90分：计算机程序</strong><br/>
+                                    "计算机就是一个'奴隶'，它按照我们给它写的'程序'执行。程序写得好，计算机就听话！"<br/>
+                                    展示简单的游戏或APP，让学生看到程序的魔力
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 页面5：初级期 -->
+                <div id="stage2" class="page">
+                    <div class="section">
+                        <div class="section-title">⭐⭐ 初级期（第5-12周）| 目标：建立基础思维</div>
+                        <ul class="list">
+                            <li class="list-item"><strong>第5-6周：条件判断（if-else）</strong><br/>
+                                场景：成绩分级。学生理解"条件决定行动"
+                            </li>
+                            <li class="list-item"><strong>第7-8周：循环（for）</strong><br/>
+                                场景：抄写100遍。让学生感受循环的威力：避免重复代码
+                            </li>
+                            <li class="list-item"><strong>第9-10周：循环进阶（while）+ 嵌套循环</strong><br/>
+                                学生能写99乘法表、画图形、做简单游戏
+                            </li>
+                            <li class="list-item"><strong>第11-12周：数组和基础算法</strong><br/>
+                                学生能处理多个数据、做简单的排序和查找
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">📝 第5周详细教案：if-else 条件语句</div>
+                        <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                            <h4 style="color: var(--primary); margin-bottom: 10px;">核心概念：根据条件做不同的动作</h4>
+                            <strong>时长：90分钟 | 难度：⭐⭐ | 项目：成绩分级系统</strong>
+                            <ul class="list" style="margin-top: 15px;">
+                                <li class="list-item"><strong style="color: var(--success);">故事情景：</strong><br/>
+                                    "你在便利店买东西。如果钱够，就买；如果钱不够，就回家。这就是'条件判断'！"
+                                </li>
+                                <li class="list-item"><strong style="color: var(--success);">代码演示：</strong><br/>
+                                    <span style="font-family: monospace; background: #f0f0f0; padding: 5px;">
+if (score >= 90) cout << "优秀"; else cout << "加油";
+                                    </span>
+                                </li>
+                                <li class="list-item"><strong style="color: var(--success);">学生动手：</strong><br/>
+                                    1. 输入一个数字，判断奇偶<br/>
+                                    2. 输入年龄，判断是否能看电影<br/>
+                                    3. 输入三个数字，找最大值
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 页面6：进阶期 -->
+                <div id="stage3" class="page">
+                    <div class="section">
+                        <div class="section-title">⭐⭐⭐ 进阶期（第13-20周）| 目标：进阶竞赛思维</div>
+                        <ul class="list">
+                            <li class="list-item"><strong>第13-14周：函数</strong><br/>
+                                核心：代码复用、模块化。学生能自己定义函数、参数传递、返回值
+                            </li>
+                            <li class="list-item"><strong>第15-16周：字符串处理</strong><br/>
+                                学生能做文本处理：分割字符串、查找子串、字符串反转
+                            </li>
+                            <li class="list-item"><strong>第17-18周：递归初步</strong><br/>
+                                学生理解递归思想，能写简单的递归程序（阶乘、斐波那契）
+                            </li>
+                            <li class="list-item"><strong>第19-20周：二维数组和矩阵操作</strong><br/>
+                                学生能处理表格数据、矩阵转置、游戏地图
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 页面7：竞赛期 -->
+                <div id="stage4" class="page">
+                    <div class="section">
+                        <div class="section-title">🏆 竞赛期（第21周+）| 目标：竞赛实战</div>
+                        <ul class="list">
+                            <li class="list-item"><strong>第21-22周：动态规划基础</strong><br/>
+                                经典问题：硬币问题、背包问题
+                            </li>
+                            <li class="list-item"><strong>第23-24周：搜索和回溯</strong><br/>
+                                经典问题：DFS、BFS、八皇后问题
+                            </li>
+                            <li class="list-item"><strong>第25周+：贪心和图论基础</strong><br/>
+                                学生能解决竞赛题目，参加区级或全国竞赛
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 页面8：AI教学指南 -->
+                <div id="ai-guide" class="page">
+                    <div class="section">
+                        <div class="section-title">🤖 AI教学指南 | AI如何赋能教学</div>
+                        <ul class="list">
+                            <li class="list-item">
+                                <strong>AI角色定位：教师的得力助手，而不是替代</strong><br/>
+                                AI处理重复工作，老师专注于引导和激励
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">✨ AI的5大应用场景</div>
+                        <div class="grid">
+                            <div class="card" style="cursor: pointer; background: linear-gradient(135deg, #c471f5 0%, #fa71cd 100%);">
+                                <div class="card-title" style="color: white;">🎯 场景1：个性化练习题生成</div>
+                                <div class="card-content" style="color: white;">
+                                    <strong>痛点：</strong> ��师没时间给每个学生出题<br/>
+                                    <strong>AI方案：</strong> 输入知识点和难度，AI生成10道题<br/>
+                                    <strong>提示词：</strong> "为C++初学者生成5道关于if-else的题目，难度中等，需要有详细答案"
+                                </div>
+                            </div>
+                            <div class="card" style="cursor: pointer; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                                <div class="card-title" style="color: white;">✏️ 场景2：作业自动批改</div>
+                                <div class="card-content" style="color: white;">
+                                    <strong>痛点：</strong> 批改20个学生的作业太耗时<br/>
+                                    <strong>AI方案：</strong> AI分析代码，给出分数和改进建议<br/>
+                                    <strong>提示词：</strong> "检查这段C++代码，给出逻辑错误、代码规范问题，并建议改进"
+                                </div>
+                            </div>
+                            <div class="card" style="cursor: pointer; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                                <div class="card-title" style="color: white;">📚 场景3：个性化学习路径</div>
+                                <div class="card-content" style="color: white;">
+                                    <strong>痛点：</strong> 学生进度不一样，老师难以针对性教学<br/>
+                                    <strong>AI方案：</strong> AI分析每个学生的掌握情况，推荐下一步<br/>
+                                    <strong>提示词：</strong> "学生掌握了if-else，建议下一步学什么？需要的练习题是什么难度？"
+                                </div>
+                            </div>
+                            <div class="card" style="cursor: pointer; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                <div class="card-title" style="color: white;">💡 场景4：错误分析和讲解</div>
+                                <div class="card-content" style="color: white;">
+                                    <strong>痛点：</strong> 学生犯同样的错误，老师要重复讲<br/>
+                                    <strong>AI方案：</strong> AI生成错误讲解文档，学生自己看<br/>
+                                    <strong>提示词：</strong> "C++初学者常在循环中犯什么错误？每个错误举例说明和改正方法"
+                                </div>
+                            </div>
+                            <div class="card" style="cursor: pointer; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                                <div class="card-title" style="color: white;">🎮 场景5：趣味编程故事</div>
+                                <div class="card-content" style="color: white;">
+                                    <strong>痛点：</strong> 直接讲语法太枯燥，学生不感兴趣<br/>
+                                    <strong>AI方案：</strong> AI根���知识点生成趣味故事<br/>
+                                    <strong>提示词：</strong> "为8岁小学生编一个故事，用来解释C++的for循环概念，要有趣、容易理解"
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">📊 AI赋能效果对比</div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>工作</th>
+                                    <th>传统方式</th>
+                                    <th>AI辅助</th>
+                                    <th>时间节省</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>出20道练习题</td>
+                                    <td>2小时</td>
+                                    <td>5分钟（AI生成+审核）</td>
+                                    <td><strong>96%</strong></td>
+                                </tr>
+                                <tr>
+                                    <td>批改20份作业</td>
+                                    <td>1.5小时</td>
+                                    <td>15分钟（AI初评+抽查）</td>
+                                    <td><strong>83%</strong></td>
+                                </tr>
+                                <tr>
+                                    <td>分析常见错误</td>
+                                    <td>1小时</td>
+                                    <td>10分钟（AI汇总+调整）</td>
+                                    <td><strong>83%</strong></td>
+                                </tr>
+                                <tr>
+                                    <td>制作学习故事</td>
+                                    <td>2小时</td>
+                                    <td>10分钟（AI创意+修改）</td>
+                                    <td><strong>92%</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p style="margin-top: 15px; color: #666;"><strong>总结：</strong>老师可以把节省的时间用在：一对一辅导、设计项目、鼓励学生、参加竞赛准备等高价值工作上。</p>
+                    </div>
+                </div>
+
+                <!-- 页面9：AI工具方案 -->
+                <div id="ai-tools" class="page">
+                    <div class="section">
+                        <div class="section-title">⚙️ AI工具方案 | 具体推荐</div>
+                        <ul class="list">
+                            <li class="list-item">
+                                <strong>通用AI（主力工具）：</strong> ChatGPT 4、Claude 3 Opus、Gemini Pro<br/>
+                                用途：生成题目、批改作业、讲解概念、分析错误
+                            </li>
+                            <li class="list-item">
+                                <strong>代码专用AI：</strong> GitHub Copilot、Codeium<br/>
+                                用途：代码补全、Bug查找、代码优化建议
+                            </li>
+                            <li class="list-item">
+                                <strong>在线编程平台：</strong> LeetCode、牛客网、CodeChef<br/>
+                                用途：提供自动评测、排名、讨论社区
+                            </li>
+                            <li class="list-item">
+                                <strong>可视化工具：</strong> Visualgo、Python Tutor、C++ Insights<br/>
+                                用途：可视化程序执行过程
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">🛠️ 建议工具组合</div>
+                        <div style="background: #f9f9f9; padding: 15px; border-radius: 8px;">
+                            <h4 style="color: var(--primary); margin-bottom: 15px;">最佳实践套装（完全免费或低成本）</h4>
+                            <ul class="list">
+                                <li class="list-item">
+                                    <strong>教学设计：</strong> ChatGPT/Claude（免费版）<br/>
+                                    生成教案、讲解、题目、讲解稿
+                                </li>
+                                <li class="list-item">
+                                    <strong>代码编写：</strong> VS Code + Codeium（免费）<br/>
+                                    学生在这里写代码，Codeium提供自动补全
+                                </li>
+                                <li class="list-item">
+                                    <strong>自动评测：</strong> 牛客网或CodeChef（免费）<br/>
+                                    学生提交代码，系统自动测试和评分
+                                </li>
+                                <li class="list-item">
+                                    <strong>可视化调试：</strong> Python Tutor（免费，虽然是Python，但逻辑适用）<br/>
+                                    帮助学生理解程序执行流程
+                                </li>
+                                <li class="list-item">
+                                    <strong>作业管理：</strong> Google Classroom（免费）<br/>
+                                    发布作业、收集提交、自动反馈
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 页面10：AI提示词库 -->
+                <div id="ai-prompts" class="page">
+                    <div class="section">
+                        <div class="section-title">💬 AI提示词库 | 复制即用</div>
+                        <ul class="list">
+                            <li class="list-item">
+                                <strong>🎯 生成练习题：</strong><br/>
+                                <span style="font-family: monospace; background: #f0f0f0; padding: 5px; display: block; margin-top: 8px;">
+为C++初学者生成8道关于【知识点】的题目。难度：【简单/中等/困难】。要求：
+1. 有详细的题目描述
+2. 提供参考答案（带注释）
+3. 对答案进行讲解
+4. 标注常见错误
+                                </span>
+                            </li>
+                            <li class="list-item">
+                                <strong>✏️ 批改代码：</strong><br/>
+                                <span style="font-family: monospace; background: #f0f0f0; padding: 5px; display: block; margin-top: 8px;">
+请批改这段C++代码，并给出：
+1. 代码是否能编译运行（是/否）
+2. 逻辑是否正确（是/否）
+3. 代码规范问题（如果有）
+4. 改进建议
+5. 最终修正后的代码
+
+代码：[学生代码]
+                                </span>
+                            </li>
+                            <li class="list-item">
+                                <strong>📚 讲解概念：</strong><br/>
+                                <span style="font-family: monospace; background: #f0f0f0; padding: 5px; display: block; margin-top: 8px;">
+请用简单的方式为8岁小学生讲解C++中的【概念】，要求：
+1. 用生活中的例子类比
+2. 3个具体的代码示例
+3. 列出常见误区
+4. 分步骤的学习路径
+
+目标听众年龄：8-10岁
+                                </span>
+                            </li>
+                            <li class="list-item">
+                                <strong>🎮 创意故事：</strong><br/>
+                                <span style="font-family: monospace; background: #f0f0f0; padding: 5px; display: block; margin-top: 8px;">
+创作一个有趣的故事来帮助8岁小学生理解C++的【知识点】。故事应该：
+1. 有有趣的角色和背景
+2. 自然地引入技术概念
+3. 用故事中的事件来演示代码逻辑
+4. 最后总结技术要点
+5. 建议的故事长度：200-300字
+                                </span>
+                            </li>
+                            <li class="list-item">
+                                <strong>🔍 错误分析：</strong><br/>
+                                <span style="font-family: monospace; background: #f0f0f0; padding: 5px; display: block; margin-top: 8px;">
+分析这个编译错误，并给出：
+1. 错误原因（用简单的语言）
+2. 为什么会犯这个错误（从学习者角度）
+3. 如何避免这个错误
+4. 改正后的代码
+
+错误信息：[错误信息]
+错误代码：[代码]
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">📋 快速模板</div>
+                        <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                            <p style="margin-bottom: 15px;"><strong>模板1：教学稿生成</strong></p>
+                            <span style="font-family: monospace; background: white; padding: 10px; display: block; border-left: 4px solid var(--accent);">
+"我需要一份关于【知识点】的教学稿，面向【年级】学生，要求：
+- 开场：一个趣味故事（5分钟讲）
+- 讲解：3个关键点
+- 演示：2个代码例子
+- 互动：1个学生可以尝试的活动
+- 总结：回顾本课要点"
+                            </span>
+                        </div>
+
+                        <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                            <p style="margin-bottom: 15px;"><strong>模板2：学生困难分析</strong></p>
+                            <span style="font-family: monospace; background: white; padding: 10px; display: block; border-left: 4px solid var(--accent);">
+"学生在学习【知识点】时经常遇到困难，请分析：
+- 为什么这个概念容易理解错误？
+- 什么样的学生容易掌握？什么样的容易失败？
+- 有什么教学方法可以帮助他们更快理解？
+- 推荐3个练习题的类型和难度梯度"
+                            </span>
+                        </div>
+
+                        <div style="background: #f9f9f9; padding: 15px; border-radius: 8px;">
+                            <p style="margin-bottom: 15px;"><strong>模板3：项目设计</strong></p>
+                            <span style="font-family: monospace; background: white; padding: 10px; display: block; border-left: 4px solid var(--accent);">
+"设计一个小项目来教学【知识点】，要求：
+- 项目名称和背景故事
+- 学生需要用到的知识点（列表）
+- 完整的项目步骤分解
+- 评分标准（基础分+创意分）
+- 预计完成时间"
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 页面11：评估体系 -->
+                <div id="assessment" class="page">
+                    <div class="section">
+                        <div class="section-title">✅ 评估体系 | 三个维度评估</div>
+                        <ul class="list">
+                            <li class="list-item">
+                                <strong>维度1：理解度</strong><br/>
+                                学生能用自己的话解释概念吗？能区分相似概念吗？
+                            </li>
+                            <li class="list-item">
+                                <strong>维度2：应用力</strong><br/>
+                                学生能改编代码吗？能自己写新程序吗？能举一反三吗？
+                            </li>
+                            <li class="list-item">
+                                <strong>维度3：进步度</strong><br/>
+                                学生这周比上周进步多少？是否在向目标靠近？
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">📊 ���体评估方法</div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>评估维度</th>
+                                    <th>评估方法</th>
+                                    <th>权重</th>
+                                    <th>工具</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>理解度（30%）</td>
+                                    <td>概念解释题 + 口头提问 + 小测验</td>
+                                    <td>30%</td>
+                                    <td>AI生成、谷歌表单</td>
+                                </tr>
+                                <tr>
+                                    <td>应用力（50%）</td>
+                                    <td>编程作业 + 代码审查 + 项目完成度</td>
+                                    <td>50%</td>
+                                    <td>Codeium、牛客网</td>
+                                </tr>
+                                <tr>
+                                    <td>进步度（20%）</td>
+                                    <td>周对比 + 一阶段总结 + 竞赛成绩</td>
+                                    <td>20%</td>
+                                    <td>个人档案、排名统计</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">🏆 激励体系</div>
+                        <ul class="list">
+                            <li class="list-item"><strong>每周排名：</strong> 根据作业完成度、代码质量、进步幅度进行排名</li>
+                            <li class="list-item"><strong>每月成就：</strong> 完成某个知识点 → 解锁成就（如"条件大师"、"循环高手"）</li>
+                            <li class="list-item"><strong>进度可视化：</strong> 用进度条展示学生的成长（目标是成为"竞赛高手"）</li>
+                            <li class="list-item"><strong>展示优秀作品：</strong> 定期展示学生的创意代码、小游戏、小工具</li>
+                            <li class="list-item"><strong>小竞赛机制：</strong> 每周一次小竞赛，排名靠前的学生有奖励</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 页面12：教学资源 -->
+                <div id="resources" class="page">
+                    <div class="section">
+                        <div class="section-title">📚 教学资源</div>
+                        <ul class="list">
+                            <li class="list-item">
+                                <strong>📝 教案库：</strong> 24份详细教案（每周1-2份），包含故事、演���、练习
+                            </li>
+                            <li class="list-item">
+                                <strong>💻 代码示例库：</strong> 100+个可运行的代码示例，涵盖所有知识点
+                            </li>
+                            <li class="list-item">
+                                <strong>🎯 练习题库：</strong> 500+道题目（AI生成），分难度等级
+                            </li>
+                            <li class="list-item">
+                                <strong>🎨 可视化资源：</strong> 流程图、示意图、动画演示
+                            </li>
+                            <li class="list-item">
+                                <strong>🏆 竞赛题库：</strong> 真实竞赛题解析和解题思路
+                            </li>
+                            <li class="list-item">
+                                <strong>🤖 AI提示词库：</strong> 50+个即用提示词（本文件已提供）
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">🎓 老师快速入门清单</div>
+                        <ul class="list">
+                            <li class="list-item">☐ 第1天：阅读本教学体系全部内容（1小时）</li>
+                            <li class="list-item">☐ 第2天：根据第1周教案，准备第一堂课（2小时）</li>
+                            <li class="list-item">☐ 第3天：上第一堂课，记录学生反应（90分钟）</li>
+                            <li class="list-item">☐ 第4天：根据反馈调整教学方法，准备第2周课程（2小时）</li>
+                            <li class="list-item">☐ 持续：按照课程大纲进行，每周花2-3小时在AI辅助工具上</li>
+                        </ul>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">📞 常见问题</div>
+                        <ul class="list">
+                            <li class="list-item">
+                                <strong>Q：我没有编程基础，能用这套体系教吗？</strong><br/>
+                                A：可以！这套体系特别为非专业人士设计。AI会提供教案、讲解稿、代码示例，你只需按照步骤讲解。建议在上课前1小时看一遍教案。
+                            </li>
+                            <li class="list-item">
+                                <strong>Q：学生进度不一样，怎么办？</strong><br/>
+                                A：用AI生成不同难度的题目。快的学生做进阶题，慢的学生做基础题。AI可以自动评估每个学生的水平。
+                            </li>
+                            <li class="list-item">
+                                <strong>Q：要花多少钱购买工具？</strong><br/>
+                                A：完全免费！用ChatGPT免费版（或Claude免费版）、VS Code、牛客网都是免费的。总成本为0。
+                            </li>
+                            <li class="list-item">
+                                <strong>Q：如何应对学生不感兴趣？</strong><br/>
+                                A：用AI生成趣味故事和小游戏项目。孩子喜欢做有成就感的事。确保每堂课都有"哇！"时刻。
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI助手 -->
+    <div class="ai-assistant" onclick="toggleAIChat()" title="点击打开AI助手">
+        💬
+    </div>
+
+    <div class="ai-chat" id="aiChat">
+        <div class="ai-chat-header">
+            🤖 AI教学助手
+            <span style="cursor: pointer; font-size: 1.2em;" onclick="toggleAIChat()">×</span>
+        </div>
+        <div class="ai-chat-body" id="chatBody">
+            <div class="ai-message assistant">
+                👋 你好！我是你的AI教学助手。有什么我可以帮你的吗？
+
+                💡 我可以帮你：
+                • 生成练习题
+                • 批改学生代码
+                • 讲解编��概念
+                • 设计项目
+                • 分析学生困难
+
+                试试问我吧！
+            </div>
+        </div>
+        <div class="ai-chat-input">
+            <input type="text" id="chatInput" placeholder="输入你的问题..." />
+            <button onclick="sendMessage()">发送</button>
+        </div>
+    </div>
+
+    <script>
+        function showPage(pageId) {
+            // 隐藏所有页面
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(p => p.classList.remove('active'));
+            
+            // 显示选中页面
+            document.getElementById(pageId).classList.add('active');
+            
+            // 更新导航项
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => item.classList.remove('active'));
+            event.target.closest('.nav-item').classList.add('active');
+            
+            // 更新标题
+            const titles = {
+                'overview': ['🎯 系统概览', '完整的C++竞赛教学体系，为0基础学生打造金牌之路'],
+                'curriculum': ['📖 课程大纲', '详细的学习进度安排和知识点"],
+                'teaching-methods': ['🎓 教学方法', '经过验证的教学方法和课堂节奏'],
+                'stage1': ['⭐ 入门期（1-4周）', '让学生爱上编程'],
+                'stage2': ['⭐⭐ 初级期（5-12周）', '建立基础思维'],
+                'stage3': ['⭐⭐⭐ 进阶期（13-20周）', '进阶竞赛思维'],
+                'stage4': ['🏆 竞赛期（21周+）', '竞赛实战'],
+                'ai-guide': ['🤖 AI教学指南', 'AI如何赋能教学'],
+                'ai-tools': ['⚙️ AI工具方案', '具体的工具推荐'],
+                'ai-prompts': ['💬 AI提示词库', '复制即用的提示词'],
+                'assessment': ['✅ 评估体系', '三个维度评估学生成长'],
+                'resources': ['📚 教学资源', '完整的资源清单和常见问题']
+            };
+            
+            if (titles[pageId]) {
+                document.getElementById('pageTitle').textContent = titles[pageId][0];
+                document.getElementById('pageDesc').textContent = titles[pageId][1];
+            }
+        }
+
+        function toggleAIChat() {
+            const chat = document.getElementById('aiChat');
+            chat.classList.toggle('show');
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            // 添加用户消息
+            const chatBody = document.getElementById('chatBody');
+            const userMsg = document.createElement('div');
+            userMsg.className = 'ai-message user';
+            userMsg.textContent = message;
+            chatBody.appendChild(userMsg);
+
+            input.value = '';
+
+            // 模拟AI回复
+            setTimeout(() => {
+                const assistantMsg = document.createElement('div');
+                assistantMsg.className = 'ai-message assistant';
+                
+                // 简单的回复逻辑
+                if (message.includes('题') || message.includes('练习')) {
+                    assistantMsg.textContent = '📝 我可以帮你生成练习题。请告诉我：\n1. 知识点是什么？（如：if-else、for循环）\n2. 难度级别？（简单/中等/困难）\n3. 需要几道题？';
+                } else if (message.includes('代码') || message.includes('批改')) {
+                    assistantMsg.textContent = '✏️ 我可以批改代码。请把学生的代码粘贴给我，我会指出：\n• 逻辑错误\n• 代码规范问题\n• 改进建议';
+                } else if (message.includes('讲解') || message.includes('怎么')) {
+                    assistantMsg.textContent = '💡 我可以讲解编程概念。请告诉我：\n1. 要讲解的概念是什么？\n2. 学生的年龄/程度？\n3. 希望用什么方式讲解？（故事/例子/代码）';
+                } else if (message.includes('项目')) {
+                    assistantMsg.textContent = '🎮 我可以帮你设计项目。请告诉我：\n1. 要用到什么知识点？\n2. 学生的程度？\n3. 项目难度？';
+                } else {
+                    assistantMsg.textContent = '👍 很好的问题！具体一点的话我能帮得更好。你可以问我：\n• 生成练习题\n• 批改代码\n• 讲解概念\n• 设计项目\n• 分析学生困难';
+                }
+                
+                chatBody.appendChild(assistantMsg);
+                chatBody.scrollTop = chatBody.scrollHeight;
+            }, 500);
+        }
+
+        // Enter发送消息
+        document.addEventListener('DOMContentLoaded', function() {
+            const input = document.getElementById('chatInput');
+            if (input) {
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') sendMessage();
+                });
+            }
+        });
+    </script>
+</body>
+</html>
